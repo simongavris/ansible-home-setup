@@ -1,0 +1,25 @@
+---
+- include_tasks: setup-debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: install docker
+  package:
+    name: "{{ docker.package }}"
+    state: "{{ docker.package_state }}"
+  notify: restart docker
+
+- name: make sure docker is started and enabled at boot
+  service:
+    name: docker
+    state: "{{ docker.service_state }}"
+    enabled: "{{ docker.service_enabled}}"
+
+#flush_handlers makes Ansible run any handler tasks which have thus far been notified. Ansible inserts these tasks internally at certain points to implicitly trigger handler runs (after pre/post tasks, the final role execution, and the main tasks section of your plays).
+- name: make sure handlers are notified now to avoid firewall conflicts
+  meta: flush_handlers
+
+- include_tasks: docker-compose.yml
+  when: docker.install_compose
+
+- include_tasks: docker-users.yml
+  when: docker.users

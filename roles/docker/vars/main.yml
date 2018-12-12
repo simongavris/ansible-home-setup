@@ -1,0 +1,25 @@
+---
+#docker vars:
+docker:
+  edition: 'ce'
+  package: "docker-{{ docker.edition }}"
+  package_state: present
+
+  # Service options.
+  service_state: started
+  service_enabled: true
+  restart_handler_state: restarted
+
+  #for debian/ubuntu
+  apt_ingore_key_error: true
+  apt_release_channel: stable
+  apt_arch: amd64
+  apt_repository: "deb [arch={{ docker.apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker.apt_release_channel }}"
+
+  #docker-compose options:
+  install_compose: true
+  compose_version: "1.22.0"
+  compose_path: /usr/local/bin/docker-compose
+
+  #all users that will be added to docker group:
+  users: []
