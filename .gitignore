@@ -1,0 +1,3 @@
+*.retry
+*.code-workspace 
+inventories/vars.private.yml
